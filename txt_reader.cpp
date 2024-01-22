@@ -14,16 +14,22 @@ inline void read_from_txt(const std::string& filename) // function for processin
 
     if (file.is_open()) 
     {
+        int counter = 0;
         std::cout << "file is opened. the content of the file:" << std::endl << std::endl;
         while (getline(file, line)) 
         {
             std::cout << line << std::endl; // read&output each line
+            counter += 1;
         }
         file.close();
+        if (counter == 0)
+        {
+            std::cerr << "ERROR. File exsits, but no valiable information contained...";
+        }
     }
     else //error handling
     {
-        std::cerr << "Unable to open file" << std::endl;
+        std::cerr << "ERROR. Unable to open file" << std::endl;
     }
 }
 
