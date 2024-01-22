@@ -35,7 +35,7 @@ The software is designed as a console application with the following components.
 
 ## Implementation Details
 ### Reading a Mathematical Function
-The function is read from a file using...
+The function is read from a file using txt_reader.cpp file, which process every line, afterward it output the content of file and close it. handle errors like empty file & existence of file.
 
 ### Taylor Series Expansion
 The Taylor series is expanded using...
