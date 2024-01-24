@@ -3,12 +3,13 @@
 #include <vector>
 #include <string>
 #include <chrono>
+#include <sstream>
 
 
 inline void generateLatex(double first, std::vector<double> second, const std::string& functionName, std::string function, double point, int terms, const std::vector<double>& eval_points)
 {
 
-    std::ofstream file("test18.tex");
+    std::ofstream file("test19.tex");
 
     file << "\\documentclass{article}\n";
     file << "\\usepackage{amsmath}\n\n";
@@ -37,15 +38,24 @@ inline void generateLatex(double first, std::vector<double> second, const std::s
     // Result
     file << "\\section{Result}\n";
     file << "The sum of the Taylor series expansion is:";
-    file << "\\[" << first << "\\]\n"; // sum 
+    file << "\\[" << functionName << "(" << function << ") = " << first << "\\]\n"; // sum 
     file << "The terms into the Taylor expansion are:";
-    for (int i = 0; i < terms; i++)
+
+    std::ostringstream ss;
+
+    ss << "\\[" << functionName << "(" << function << ") = " << first;
+
+    for (size_t i = 0; i < second.size(); ++i) 
     {
-        file << "\\[" << second[i] << "\\]"; // terms - sequence of decomposition
+        ss << " + " << second[i] << "x^{" << i << "}";
     }
 
+    ss << "\\]";
 
-    // Evaluation at Points
+    file << ss.str();
+
+
+    // evaluation at Points
     file << "\\section{Function Evaluation at Specific Points(not complete)}\n";
     file << "The function values at specific points are:\n";
     file << "\\begin{itemize}\n";
