@@ -1,17 +1,19 @@
 #include <iostream>
 #include <vector>
+#include <string>
+#include <regex>
 #include <cmath>
-
+#include <utility>
 
 // nth degree of derivative of polynomials around point p with coefs
 inline double nth_derivative(const std::vector<double>& coefs, int n, double p) // maximal approximation achieved here 
 {
     double derivative = 0.0;
 
-    for (int i = n; i <= coefs.size()-1; i++)
+    for (int i = n; i < coefs.size(); ++i)
     {
         double term = coefs[i];
-        for (int j = 0; j < n; j++)
+        for (int j = 0; j < n; ++j)
         {
             term *= (i - j);
         }
@@ -22,33 +24,57 @@ inline double nth_derivative(const std::vector<double>& coefs, int n, double p) 
 }
 
 // function to compute Taylor series expansion of a polynomial around a point
-inline double taylor_sum(const std::vector<double>& coefs, double p)
+inline std::pair<double, std::vector<double>> taylor_sum(const std::vector<double>& coefs, double p, int term)
 {
     double sum = 0.0;
-    for (int i = 0; i < 10; i++) // 10 - is degree of taylor decomposition 
+    std::vector<double> terms(term, 0.0);
+    for (int i = 0; i < term; ++i) // 10 - is degree of taylor decomposition (term=10)
     {
-        double term = nth_derivative(coefs, i, p) / std::tgamma(i + 1);
-        sum += term * std::pow(p, i);
+        double term = (nth_derivative(coefs, i, p) * std::pow(p, i)) / std::tgamma(i + 1);
+        sum += term;
+        terms[i] = term;
         std::cout << sum << " - sum " << term << " - term" << std::endl;
 
     }
-    return sum;
+    return std::make_pair(sum, terms);
 }
 
 
-inline double taylor_example(double expansionPoint, int terms)
+inline std::pair<double, std::vector<double>> taylor_decomposition(const std::string& function, const std::string& functionName, double expansionPoint, int term)
 {
     std::cout << "Taylor decomposition started" << std::endl;
-    // example for polynomial: 10 + 1x + 10x^3
-    std::vector<double> coefficients = {1000, 10, 20, -25}; // ordered from lowest degree to highest
 
-    double taylorCoeffs = taylor_sum(coefficients, expansionPoint);
+    std::regex term_regex("([+-]?\\d*)\\*?x\\^?(\\d*)"); // init standard math operations.
+    std::smatch match;
+    std::string temp_function = function;
+    std::vector<double> coefficients(term, 0.0); // init coefficients with zeros. ordered from lowest degree to highest
 
-    std::cout << "Result: " << taylorCoeffs << std::endl;
+    // Parse the function and extract coefficients
+    while (std::regex_search(temp_function, match, term_regex)) 
+    {
+        //int power = match[2].str().empty() ? 1 : std::stoi(match[2].str()) ;
+        int power = match[2].str().empty() ? (match[1].str().empty() ? 0 : 1) : std::stoi(match[2].str());
+        double coeff = match[1].str().empty() ? 1.0 : std::stod(match[1].str());
+
+        if (power < term) 
+        {
+            coefficients[power] = coeff;
+        }
+
+        temp_function = match.suffix().str(); // proceed to the next match
+    }
+
+    std::pair<double, std::vector<double>> taylorResult = taylor_sum(coefficients, expansionPoint, term);
+    double sum = taylorResult.first;
+    std::vector<double> terms = taylorResult.second;
+
+    std::cout << "Result: " << sum << std::endl;
     std::cout << "Taylor decomposition finished" << std::endl;
 
-    return 0;
-}
+    return std::make_pair(sum, terms);
+}   
+
+
 
 // alternative way, using newton-raphson method
 /*
