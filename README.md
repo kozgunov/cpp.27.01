@@ -20,7 +20,7 @@ roots, and generates a detailed solution in a PDF file using LaTeX.
 • Integration with LaTeX for generating the PDF report is required.
 • The program must effectively handle common errors, such as file not found or incorrect function syntax.
 
-# Evaluation criteria:
+## Evaluation criteria:
 • Accuracy of the Taylor series expansion and root finding.
 • Code quality, including readability, structure, and adherence to coding
 standards.
