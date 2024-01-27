@@ -28,7 +28,10 @@ standards.
 • Usability and reliability of the program.
 
 ## Design and Architecture
-The software is designed as a console application with the following components...
+The software is designed as a console application with the following components:
+1. text file reading and figuring out the function
+2. taylor decomposition
+3. creating and filling pdf file (using latex)
 
 ## Implementation Details
 ### Reading a Mathematical Function
